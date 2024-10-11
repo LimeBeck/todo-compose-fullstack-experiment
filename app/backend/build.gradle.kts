@@ -29,49 +29,28 @@ dependencies {
 
 val jvmProcessResources = tasks.named<Copy>("processResources")
 
-// val jsCopyTask = tasks.create<Copy>("jsCopyTask") {
-//     val frontendDist = project(":app:frontend").tasks.named("jsBrowserProductionWebpack")
-//     dependsOn(frontendDist)
-//     from(frontendDist)
-//     into(jvmProcessResources.get().destinationDir.resolve("static"))
-//     excludes.add("*.zip")
-//     excludes.add("*.tar")
-// }
-
 val buildAndCopyFrontend = tasks.register<Copy>("buildAndCopyFrontend") {
-    val frontendDist = project(":frontend").tasks.named("jsBrowserProductionWebpack")
+    val frontendDist = project(":app:frontend").tasks.named("jsBrowserDistribution")
     dependsOn(frontendDist)
     from(frontendDist)
     into(jvmProcessResources.get().destinationDir.resolve("static"))
+    excludes.add("*.zip")
+    excludes.add("*.tar")
+    excludes.add("*.map")
+    excludes.add("webpack.config.js")
 }
 
-// val prepareAppResources = tasks.register("prepareAppResources") {
-//     dependsOn(buildAndCopyFrontend)
-//     finalizedBy("processResources")
-// }
-
-// val buildApp = tasks.register("buildApp") {
-//     dependsOn(prepareAppResources)
-//     finalizedBy("assemble")
-// }
-
-// tasks.create("runApp") {
-//     group = "application"
-//     dependsOn(buildApp)
-//     finalizedBy(tasks.named("run"))
-// }
-
-tasks.named("jvmJar") {
+tasks.named("jar") {
     dependsOn(buildAndCopyFrontend)
 }
 
-tasks.named("jvmTest") {
+tasks.named("test") {
     dependsOn(buildAndCopyFrontend)
 }
 
 tasks.named<JavaExec>("run") {
-    dependsOn(tasks.named<Jar>("jvmJar"))
-    classpath(tasks.named<Jar>("jvmJar"))
+    dependsOn(tasks.named<Jar>("jar"))
+    classpath(tasks.named<Jar>("jar"))
 }
 
 testing {
