@@ -3,33 +3,76 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.kotlinx.rpc.platform)
     application
+    distribution
 }
 
-repositories {
-    mavenCentral()
+dependencies {
+    implementation(projects.app.common)
+    implementation(libs.ktor.server.cio)
+    implementation(libs.ktor.server.core.jvm)
+    implementation(libs.ktor.server.cors.jvm)
+    implementation(libs.ktor.server.websockets.jvm)
+
+    implementation(libs.kotlinx.coroutines.core.jvm)
+    implementation(libs.logback.classic)
+
+    implementation(libs.kotlinx.rpc.krpc.ktor.server)
+    implementation(libs.kotlinx.rpc.krpc.serialization.json)
+
+    testImplementation(libs.kotlinx.rpc.krpc.client)
+    testImplementation(libs.kotlinx.rpc.krpc.ktor.client)
+    testImplementation(kotlin("test"))
+    testImplementation(libs.ktor.server.test.host)
 }
 
-java {
-    dependencies {
-            // This dependency is used by the application.
-    }
-}
-
-// val jvmProcessResources = tasks.named<Copy>("jvmProcessResources")
+val jvmProcessResources = tasks.named<Copy>("processResources")
 
 // val jsCopyTask = tasks.create<Copy>("jsCopyTask") {
-//     val jsBrowserDistribution = tasks.named("jsBrowserDistribution")
-//     from(jsBrowserDistribution)
+//     val frontendDist = project(":app:frontend").tasks.named("jsBrowserProductionWebpack")
+//     dependsOn(frontendDist)
+//     from(frontendDist)
 //     into(jvmProcessResources.get().destinationDir.resolve("static"))
 //     excludes.add("*.zip")
 //     excludes.add("*.tar")
 // }
 
-// tasks.named<JavaExec>("run") {
-//     dependsOn(tasks.named<Jar>("jvmJar"))
-//     classpath(tasks.named<Jar>("jvmJar"))
+val buildAndCopyFrontend = tasks.register<Copy>("buildAndCopyFrontend") {
+    val frontendDist = project(":frontend").tasks.named("jsBrowserProductionWebpack")
+    dependsOn(frontendDist)
+    from(frontendDist)
+    into(jvmProcessResources.get().destinationDir.resolve("static"))
+}
+
+// val prepareAppResources = tasks.register("prepareAppResources") {
+//     dependsOn(buildAndCopyFrontend)
+//     finalizedBy("processResources")
 // }
+
+// val buildApp = tasks.register("buildApp") {
+//     dependsOn(prepareAppResources)
+//     finalizedBy("assemble")
+// }
+
+// tasks.create("runApp") {
+//     group = "application"
+//     dependsOn(buildApp)
+//     finalizedBy(tasks.named("run"))
+// }
+
+tasks.named("jvmJar") {
+    dependsOn(buildAndCopyFrontend)
+}
+
+tasks.named("jvmTest") {
+    dependsOn(buildAndCopyFrontend)
+}
+
+tasks.named<JavaExec>("run") {
+    dependsOn(tasks.named<Jar>("jvmJar"))
+    classpath(tasks.named<Jar>("jvmJar"))
+}
 
 testing {
     suites {
