@@ -2,6 +2,7 @@
     "recommendations": [
         "vscjava.vscode-gradle",
         "fwcd.kotlin",
-        "k--kato.intellij-idea-keybindings"
+        "k--kato.intellij-idea-keybindings",
+        "tamasfe.even-better-toml"
     ]
 }

@@ -5,14 +5,11 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.jetbrains.compose.compiler)
-}
-
-repositories {
-    mavenCentral()
+    alias(libs.plugins.kotlinx.rpc.platform)
 }
 
 kotlin {
-    js {
+    js(IR) {
         browser {
             commonWebpackConfig {
                 outputFileName = "todo.js"
@@ -33,7 +30,15 @@ kotlin {
 
     sourceSets {
         jsMain.dependencies {
-            implementation(libs.kotlin.coroutines)
+            implementation(projects.app.common)
+
+            implementation(libs.kotlin.stdlib.js)
+            implementation(libs.ktor.client.js)
+            implementation(libs.ktor.client.websockets.js)
+            implementation(libs.kotlinx.rpc.krpc.ktor.client)
+            implementation(libs.kotlinx.rpc.krpc.serialization.json)
+
+            implementation(libs.kotlinx.coroutines.core.js)
             implementation(libs.kotlin.extensions)
             implementation(libs.kotlinx.serialization.core)
             implementation(libs.kotlinx.serialization.json)
@@ -49,10 +54,6 @@ kotlin {
 
         jsTest.dependencies {
             implementation(kotlin("test-js"))
-        }
-
-        jvmMain.dependencies {
-            // This dependency is used by the application.
         }
     }
 }
