@@ -17,3 +17,4 @@ rootProject.name = "todo-compose-fullstack-experiment"
 include("app:common")
 include("app:frontend")
 include("app:backend")
+include("rpc")
