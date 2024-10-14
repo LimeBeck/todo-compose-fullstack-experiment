@@ -4,7 +4,7 @@
 
 package kotlinx.rpc.krpc.ktor.client
 
-import dev.limebeck.todo.rpc.KtorTransport
+import rpc.KtorTransport
 import io.ktor.websocket.*
 import kotlinx.rpc.RPCClient
 import kotlinx.rpc.internal.utils.InternalRPCApi

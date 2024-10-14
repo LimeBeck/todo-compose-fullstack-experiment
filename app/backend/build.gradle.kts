@@ -8,6 +8,8 @@ plugins {
 
 dependencies {
     implementation(projects.app.common)
+    implementation(projects.rpc)
+
     implementation(libs.ktor.server.cio)
     implementation(libs.ktor.server.core.jvm)
     implementation(libs.ktor.server.cors.jvm)
@@ -19,8 +21,6 @@ dependencies {
     implementation(libs.hoplite.yaml)
     implementation(libs.arrow.suspendapp)
 
-    implementation(libs.kotlinx.rpc.krpc.core)
-    implementation(libs.kotlinx.rpc.krpc.server)
     implementation(libs.kotlinx.rpc.krpc.serialization.json)
 
     testImplementation(libs.kotlinx.rpc.krpc.client)
