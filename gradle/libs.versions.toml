@@ -2,16 +2,16 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-kotlin = "2.0.10"
+kotlin = "2.0.0"
 compose = "1.6.11"
-kotlinx-html = "0.11.0"
 kotlinx-datetime = "0.6.1"
 kotlinx-serialization = "1.6.0"
 router = "0.2.14"
-ktor = "3.0.0"
+ktor = "2.3.12"
 kotlinx-rpc = "0.3.0"
 kotlinx-coroutines-core = "1.9.0"
 logback = "1.5.8"
+hoplite = "2.7.5"
 
 [libraries]
 # kotlin
@@ -25,16 +25,19 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-core-js = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js", version.ref = "kotlinx-coroutines-core" }
 kotlinx-coroutines-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlinx-coroutines-core" }
 
-kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html", version.ref = "kotlinx-html" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
-kotlin-css = { module = "org.jetbrains.kotlin-wrappers:kotlin-css", version = "1.0.0-pre.751" }
 kotlin-extensions = { module = "org.jetbrains.kotlin-wrappers:kotlin-extensions", version = "1.0.1-pre.751" }
-uuid = { module = "com.benasher44:uuid", version = "0.8.4" }
 
 router = { module = "app.softwork:routing-compose", version.ref = "router" }
 
 # logback
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
+# hoplite
+hoplite-core = { module = "com.sksamuel.hoplite:hoplite-core", version.ref = "hoplite" }
+hoplite-yaml = { module = "com.sksamuel.hoplite:hoplite-yaml", version.ref = "hoplite" }
+
+arrow-suspendapp = { module = "io.arrow-kt:suspendapp", version = "0.4.0" }
 
 # ktor
 ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
@@ -53,6 +56,7 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 
 # krpc
 kotlinx-rpc-core = { module = "org.jetbrains.kotlinx:kotlinx-rpc-core" }
+kotlinx-rpc-krpc-core = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-core" }
 kotlinx-rpc-krpc-client = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-client" }
 kotlinx-rpc-krpc-server = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-server" }
 kotlinx-rpc-krpc-ktor-client = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-ktor-client" }

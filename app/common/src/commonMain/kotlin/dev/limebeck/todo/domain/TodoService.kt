@@ -1,9 +1,9 @@
-package dev.limebeck.todo
+package dev.limebeck.todo.domain
 
-import kotlin.jvm.JvmInline
 import kotlinx.coroutines.flow.Flow
 import kotlinx.rpc.RPC
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmInline
 
 
 interface TodoService : RPC {
@@ -15,8 +15,8 @@ interface TodoService : RPC {
     suspend fun subscribeToNewTasks(): Flow<Task>
 }
 
-@Serializable 
-@JvmInline 
+@Serializable
+@JvmInline
 value class TaskId(val value: String)
 
 @Serializable
@@ -26,8 +26,8 @@ data class Task(
     val completed: Boolean,
 )
 
-@Serializable 
+@Serializable
 data class NewTask(val description: String)
 
-@Serializable 
+@Serializable
 data class TasksFilter(val completed: Boolean? = null)

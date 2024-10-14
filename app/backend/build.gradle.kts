@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlinx.serialization)
@@ -17,12 +15,15 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.core.jvm)
     implementation(libs.logback.classic)
+    implementation(libs.hoplite.core)
+    implementation(libs.hoplite.yaml)
+    implementation(libs.arrow.suspendapp)
 
-    implementation(libs.kotlinx.rpc.krpc.ktor.server)
+    implementation(libs.kotlinx.rpc.krpc.core)
+    implementation(libs.kotlinx.rpc.krpc.server)
     implementation(libs.kotlinx.rpc.krpc.serialization.json)
 
     testImplementation(libs.kotlinx.rpc.krpc.client)
-    testImplementation(libs.kotlinx.rpc.krpc.ktor.client)
     testImplementation(kotlin("test"))
     testImplementation(libs.ktor.server.test.host)
 }

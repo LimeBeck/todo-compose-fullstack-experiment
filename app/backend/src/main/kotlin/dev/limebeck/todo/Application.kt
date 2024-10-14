@@ -3,7 +3,77 @@
  */
 package dev.limebeck.todo
 
+import arrow.continuations.SuspendApp
+import com.sksamuel.hoplite.*
+import dev.limebeck.todo.domain.TodoService
+import dev.limebeck.todo.domain.TodoServiceImpl
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.cio.*
+import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
+import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.routing.*
+import kotlinx.rpc.krpc.ktor.server.RPC
+import kotlinx.rpc.krpc.ktor.server.rpc
+import kotlinx.rpc.krpc.serialization.json.json
 
-fun main() {
-    println("Hi")
+
+fun main(args: Array<String>) = SuspendApp {
+    val configLoader =
+        ConfigLoaderBuilder
+            .default()
+            .addResourceSource("/defaultConfig.yaml")
+            .addFileSource("config.yaml", optional = true)
+            .addEnvironmentSource()
+            .addCommandLineSource(args)
+            .build()
+
+    val applicationConfig = configLoader.loadConfigOrThrow<ApplicationConfig>()
+
+    embeddedServer(CIO, environment = applicationEngineEnvironment {
+        connector {
+            host = applicationConfig.server.host
+            port = applicationConfig.server.port
+        }
+        module {
+            install(RPC)
+            install(CORS) {
+                allowMethod(HttpMethod.Options)
+                allowMethod(HttpMethod.Put)
+                allowMethod(HttpMethod.Delete)
+                allowMethod(HttpMethod.Patch)
+                allowHeader(HttpHeaders.Authorization)
+                allowHeader(HttpHeaders.AccessControlAllowOrigin)
+                allowHeader(HttpHeaders.Upgrade)
+                allowNonSimpleContentTypes = true
+                allowCredentials = true
+                allowSameOrigin = true
+
+                // webpack-dev-server and local development
+                val allowedHosts = listOf("localhost:3000", "localhost:8080", "127.0.0.1:8080")
+                allowedHosts.forEach { host ->
+                    allowHost(host, listOf("http", "https", "ws", "wss"))
+                }
+            }
+
+            routing {
+                route("/rpc") {
+                    rpc {
+                        rpcConfig {
+                            serialization {
+                                json()
+                            }
+                        }
+
+                        registerService<TodoService> { ctx -> TodoServiceImpl(ctx) }
+                    }
+                }
+
+                staticResources("/", "/static") {
+                    default("index.html")
+                }
+            }
+        }
+    }).start(wait = true)
 }
